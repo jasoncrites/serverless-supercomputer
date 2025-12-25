@@ -1,0 +1,29 @@
+name: AFS Instant Build
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 'Submit Build'
+        run: |
+          echo "Using Universal Buildpacks/Dockerfile support (AFS Instant)..."
+          # Default to project settings
+          gcloud builds submit . --tag us-central1-docker.pkg.dev/afs-jasoncrites-1766633078257/cloud-run-source-deploy/${{ github.event.repository.name }}
