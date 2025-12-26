@@ -1,0 +1,4 @@
+afs-builder-key.json
+__pycache__/
+*.pyc
+main.py.bak
